@@ -509,3 +509,26 @@ hr.costura { border: 0; border-top: 1.5px dashed var(--linha-forte); margin: 18p
   box-shadow: 0 0 0 8px var(--papel), 0 0 0 10px rgba(169, 137, 204, 0.45), 0 0 34px 12px rgba(169, 137, 204, 0.35);
   transform: scale(1.02);
 }
+
+.abas label.ativo { background: var(--folha); color: var(--tinta); box-shadow: var(--sombra); font-weight: 600; }
+
+/* menus do cabeçalho (ex.: Imprimir ▾) ficam acima dos cartões animados abaixo */
+.topo { position: relative; z-index: 20; }
+
+/* cartão de OS: o nome nunca invade o lado direito; em colunas estreitas, valor/status descem */
+.folha { container-type: inline-size; }
+.ficha-os > span:nth-child(2) { min-width: 0; }
+.ficha-os .quem { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ficha-os .lado .linha { flex-wrap: nowrap; }
+@container (max-width: 520px) {
+  .ficha-os { grid-template-columns: auto minmax(0, 1fr); row-gap: 8px; }
+  .ficha-os .lado {
+    grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center;
+    border-top: 1px dashed var(--linha); padding-top: 8px; text-align: left;
+  }
+}
+@container (max-width: 340px) {
+  .ficha-os { grid-template-columns: minmax(0, 1fr); }
+  .ficha-os .n { display: none; }
+  .ficha-os .lado { flex-wrap: wrap; gap: 6px; }
+}

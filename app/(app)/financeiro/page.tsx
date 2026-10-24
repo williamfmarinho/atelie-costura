@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { excluirMovimentacao, salvarMovimentacao } from '@/app/actions';
 import { InputData, InputDinheiro } from '@/components/Campos';
 import { CosturaTitulo } from '@/components/Icones';
+import TipoCategoria from '@/components/TipoCategoria';
 import { dataCurta, dinheiro, dinheiroParaTexto, fimDoMes, hoje, inicioDoMes, lerMes, maiuscula, MESES, mesParam } from '@/lib/format';
 import { db, FORMAS_PAGAMENTO, type Categoria, type Movimentacao } from '@/lib/supabase';
 
@@ -108,31 +109,13 @@ export default async function Caixa({ searchParams }: { searchParams: Promise<{ 
           <form action={salvarMovimentacao} className="pilha" style={{ gap: 12 }} key={ed?.id ?? 'novo'}>
             {ed && <input type="hidden" name="id" value={ed.id} />}
             <input type="hidden" name="volta" value={volta} />
-            <div className="abas" style={{ alignSelf: 'flex-start' }}>
-              <label className={tipoForm === 'entrada' ? '' : ''} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px' }}>
-                <input type="radio" name="tipo" value="entrada" defaultChecked={tipoForm === 'entrada'} style={{ width: 'auto', accentColor: 'var(--salvia)' }} /> Entrada
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px' }}>
-                <input type="radio" name="tipo" value="saida" defaultChecked={tipoForm === 'saida'} style={{ width: 'auto', accentColor: 'var(--alfinete)' }} /> Saída
-              </label>
-            </div>
-            <label className="campo"><span>Descrição</span><input name="descricao" required defaultValue={ed?.descricao} placeholder="Ex.: Conta de luz" /></label>
-            <div className="linha-form">
-              <label className="campo"><span>Valor (R$)</span><InputDinheiro name="valor" required defaultValue={dinheiroParaTexto(ed?.valor)} /></label>
-              <label className="campo"><span>Data</span><InputData name="data" required defaultValue={ed?.data ?? (mesQs === hoje().slice(0, 7) ? hoje() : inicioDoMes(ano, mes))} /></label>
-            </div>
-            <label className="campo">
-              <span>Categoria</span>
-              <select name="categoria_id" defaultValue={ed?.categoria_id ?? ''}>
-                <option value="">Sem categoria</option>
-                <optgroup label="Saídas">
-                  {cats.filter((c) => c.tipo === 'saida').map((c) => <option key={c.id} value={c.id}>{c.nome}{c.fixa ? ' (fixa)' : ''}</option>)}
-                </optgroup>
-                <optgroup label="Entradas">
-                  {cats.filter((c) => c.tipo === 'entrada').map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
-                </optgroup>
-              </select>
-            </label>
+            <TipoCategoria cats={cats} tipoInicial={tipoForm} categoriaInicial={ed?.categoria_id}>
+              <label className="campo"><span>Descrição</span><input name="descricao" required defaultValue={ed?.descricao} placeholder="Ex.: Conta de luz" /></label>
+              <div className="linha-form">
+                <label className="campo"><span>Valor (R$)</span><InputDinheiro name="valor" required defaultValue={dinheiroParaTexto(ed?.valor)} /></label>
+                <label className="campo"><span>Data</span><InputData name="data" required defaultValue={ed?.data ?? (mesQs === hoje().slice(0, 7) ? hoje() : inicioDoMes(ano, mes))} /></label>
+              </div>
+            </TipoCategoria>
             <label className="campo">
               <span>Forma de pagamento</span>
               <select name="forma_pagamento" defaultValue={ed?.forma_pagamento ?? ''}>
